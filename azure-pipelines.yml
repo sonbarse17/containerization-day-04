@@ -1,0 +1,39 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: 'self-hosted-pool'
+
+stages:
+
+- stage: Build
+  displayName: Build Stage
+  jobs:
+  - job: BuildJob
+    steps:
+    - script: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements.txt
+      displayName: 'Install Dependencies'
+
+- stage: Test
+  displayName: Test Stage
+  dependsOn: Build
+  jobs:
+  - job: TestJob
+    steps:
+    - script: |
+        export PYTHONPATH=$PYTHONPATH:.
+        pytest
+      displayName: 'Run Tests'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFiles: 'testResult.xml'
+        testRunTitle: 'Python tests'
+      condition: always()
