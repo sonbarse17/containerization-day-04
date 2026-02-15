@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: calc-app
   IMAGE_TAG: ${{ github.sha }}
   AWS_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-  AZURE_REGISTRY: calcappregistrytask12.azurecr.io/
+  AZURE_REGISTRY: calcappregistrytask12.azurecr.io
 
 jobs: 
   build:
