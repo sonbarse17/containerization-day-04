@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'self-hosted-pool'
+  name: 'self-hosted-pool'
 
 steps:
 
