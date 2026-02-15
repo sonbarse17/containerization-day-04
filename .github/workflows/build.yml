@@ -91,3 +91,17 @@ jobs:
         run: |
           docker push \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/calc-app:${{ github.sha }}
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Login to azure ACR
+        run: az acr login --name calcappregistrytask12
+      
+      - name:  Tag image for azure
+        run: |
+          docker tag calc-app:${{ github.sha }} \
+          calcappregistrytask12.azurecr.io/calc-app:${{ github.sha }}
+      - name: Push to Azure ACR
+        run: docker push calcappregistrytask12.azurecr.io/calc-app:${{ github.sha }}
