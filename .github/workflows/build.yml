@@ -8,6 +8,13 @@ on:
   pull_request:
     branches:
         - main 
+
+env:
+  IMAGE_NAME: calc-app
+  IMAGE_TAG: ${{ github.sha }}
+  AWS_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  AZURE_REGISTRY: calcappregistrytask12.azurecr.io/
+
 jobs: 
   build:
     runs-on: ubuntu-latest
@@ -84,13 +91,10 @@ jobs:
           exit-code: 1
           severity: CRITICAL
       - name: Tag Docker Image
-        run: |
-          docker tag calc-app:${{ github.sha }} \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/calc-app:${{ github.sha }}
+        run: docker tag $IMAGE_NAME:$IMAGE_TAG $AWS_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
       - name: Push Docker Image
-        run: |
-          docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/calc-app:${{ github.sha }}
+        run: docker push $AWS_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
       - name: Azure login
         uses: azure/login@v1
@@ -100,8 +104,6 @@ jobs:
         run: az acr login --name calcappregistrytask12
       
       - name:  Tag image for azure
-        run: |
-          docker tag calc-app:${{ github.sha }} \
-          calcappregistrytask12.azurecr.io/calc-app:${{ github.sha }}
+        run: docker tag $IMAGE_NAME:$IMAGE_TAG $AZURE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
       - name: Push to Azure ACR
-        run: docker push calcappregistrytask12.azurecr.io/calc-app:${{ github.sha }}
+        run: docker push $AZURE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
