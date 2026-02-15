@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from app.utils import add
- 
+
+
 app = FastAPI()
- 
+
+
 @app.get("/")
 def root():
     return {"message": "App is running"}
