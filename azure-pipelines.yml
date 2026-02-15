@@ -11,11 +11,6 @@ pool:
 
 steps:
 
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.14'
-  displayName: 'Setup Python'
-
 - script: |
     python -m pip install --upgrade pip
     python install -r requirements.txt
